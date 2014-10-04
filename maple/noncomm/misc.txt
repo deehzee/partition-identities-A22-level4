@@ -1,0 +1,89 @@
+#################################################################
+#
+# File: misc.txt
+#
+# Author: Debajyoti Nandi
+#
+# Miscellaneous Procedures Used Elsewhere
+# =======================================
+#
+# In this file, we list a few procedures used in the Maple
+# worksheets else where.
+#
+# Provides:
+# =========
+# b(F, G): Lie bracket of F, G (noncommutative polynomials)
+#
+# adpow(k, F, G): ((ad F)^k).G
+#
+# is0inV(u, T): checks if the monomial (f[0], f[1]) acting
+#   v[0] is 0 in the std module V of type T, where 
+#   T = "40", "21" or "02".
+#
+# genseq(k): generates all binary sequences of length k.
+#
+# genF(s): given a binary sequence s, it maps the sequence
+#   into the monomial in f[0] and f[1] acting on v[0].
+#
+#################################################################
+
+# b(F,G): [F,G] (Lie bracket)
+b := (F,G) -> subtractPoly(multPoly(F,G), multPoly(G,F));
+
+# adpow(k,F,G): (ad F)^k.G
+adpow := proc(k,F,G)
+  local i, H := G;
+  for i from 1 to k do
+    H := b(F,H);
+  end do;
+  return H;
+end proc;
+
+# is0inV(u,T): Checks if a homogeneous vector u of negative 
+#   degree (user's responsibility to enforce this)
+#   in V (std module of type T, T="40", "21" or "02")
+#   by checking if e[0].v = e[1].v = 0. Here, v is
+#   assumed to be in terms of the Chevalley generators
+#   acting on the highest weight vector v[0].
+#
+# Requires: npolyops.txt, npolysubs.txt, A22-rules.txt
+#
+is0inV := proc(u,T)
+  local U := simplifyPoly(u), Rules := RgenV||T;
+  
+  #boundary checks
+  if nops(U)=1 and U[1][2] = [v[0]] then
+    return false;  
+  elif U = [] then
+    return true;
+  end if;
+  
+  #recursive checks
+  if is0inV(rewritePoly(multPoly([[1,[e[0]]]],U),Rules),T) and
+  is0inV(rewritePoly(multPoly([[1,[e[1]]]],U),Rules),T) then
+    return true;
+  end if;
+  
+  return false;
+end proc;
+
+# Generates binary sequences of length k
+# Example: genseq(3) = [[0, 0], [0, 1], [1, 0], [1, 1]]
+#
+genseq := proc(k)
+  if k=0 then return [[]] end if;
+  return [seq(seq([i,op(L)], L in genseq(k-1)), i=0..1)];
+end proc;
+
+# Converts a binary seq [i1,...,in] into f[i1]...f[in].v[0]
+# (as a noncommutative polynomial using list)
+# Example: genF([1,0]) = [[1,[f[1],f[0],v[0]]]]
+#
+genF := proc(sq)
+  local s, m := [];
+  for s in sq do
+    m := [op(m), f[s]];
+  end do;
+  return [[1, [op(m),v[0]]]];
+end proc;
+

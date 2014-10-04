@@ -1,0 +1,223 @@
+################################################################
+#
+# File: npolyops.txt
+#
+# Operations on Noncommutative Polynomials
+# ========================================
+#
+# Author: Debajyoti Nandi
+#
+# Inspired by Zeilberger (NCFPS)
+#   http://www.math.rutgers.edu/~zeilberg/tokhniot/NCFPS
+#
+# This is slightly modified version of Prof. D. Zeilberger's
+# NCFPS package. A few extra procedures added to suit our
+# purpose. 
+#
+# The internal representation of noncommutative polynomials
+# is done using lists, same as in NCFPS package.
+#
+# Provides
+# ========
+# 
+# (F,G: noncommutative polynomials,
+#  c: constnat, 
+#  m: monomial,
+#  t: term)
+#
+# simplifyPoly(F): Simplifies F by collecting terms with the 
+#   same monomial. Additionaly, the returned polynomial has
+#   terms arranged in decreasing order of degree (number of
+#   indeterminates in a monomial).
+#
+# addPoly(F,G): Adds F and G.
+#
+# subtractPoly(F,G): F-G.
+#
+# sMulPoly(c,F): c*F (scalar multiplication)
+#
+# multPoly(F,G): F.G (multiplication)
+#
+# coeffPoly(m,F): coefficient of m in F.
+#
+# subsPoly(S,F): simplifies the coeffs in F using substitution
+#   rules S (using the Maple builtin function "subs").
+#   Example:
+#     F := [[w^3, [x]]] (eqv. to (w^3)*x),
+#     S := w^6=1
+#     subscPoly(S,F) = [[-1,[x]]] (eqv. to -x). 
+#
+# evalcPoly(F): simplifies the coeffs in F using evalc().
+#
+# coeffPoly(m,P): Finds the coefficient of the monomial m 
+#   in the polynomial P. Returns 0 if the monomial is not present.
+################################################################
+
+# simplifyPoly(F): simplifies F. 
+# -- Slight modification of "Pashet" form NCFPS package.
+# -- Returned polynomials has terms sorted by degree.
+# (these modifications ensures that the order of the monomials
+# is optimal for the type of substitution rules we have for
+# our computations. For example, the substitution rules
+# based on the Lie brackets reduce the number of variables
+# when we commute them. Thus we want to straighten out
+# the longest monomial first.)
+
+simplifyPoly := proc(F)
+  local t, m, md, i, T, T1, L, M, M1, C;
+  
+  # M: collection of monomials in F
+  M := {seq(t[2], t in F)}; 
+  for m in M do
+    C[m] := 0;
+  end do;
+
+  for t in F do
+    #collecting coeffs
+    C[t[2]] := C[t[2]] + t[1]; 
+  end do;
+  
+  # T: collection of nonzero terms
+  T := [];
+  for m in M do
+    if C[m] <> 0 then
+      T := [op(T), [C[m], m]];
+    end if;
+  end do;
+  
+  # Boundary case: T = []
+  if T = [] then
+    return [];
+  end if;
+  
+  # Simplify the constants (they maybe symbolic)
+  for t in T do
+    C[t[2]] := simplify(C[t[2]]);
+  end do;
+  
+  # M1: collection of monomials with nonzero coeff (sorted)
+  M1 := [seq(t[2], t in T)];
+  M1 := sort(M1);
+  
+  # T1: terms in T sorted by monomials
+  T1 := [seq([C[m], m], m in M1)];
+  
+  # Sorting by degree:
+  
+  #md: max degree (md >= 0)
+  md := max(seq(nops(t[2]), t in T1));
+  
+  # L[i]: nonzero terms of degree i
+  for i from 0 to md do
+    L[i] := []; 
+  end do;
+  
+  for t in T1 do
+    L[nops(t[2])] := [op(L[nops(t[2])]), t];
+  end do;
+  
+  # Keep this order for faster processing in our case
+  return [seq(op(L[i]), i=md..0, -1)];
+end proc;
+
+################################################################
+
+# sMulPoly(c,F): c*F (scalar multiplication)--simplified.
+# -- Same as "sMul" from NCFPS.
+
+sMulPoly := proc(c, F)
+  local i;
+  return simplifyPoly([seq([c*F[i][1], F[i][2]], i=1..nops(F))]);
+end proc;
+
+################################################################
+
+# multPoly(F,G): F.G (multiplication)--simplified
+# -- Same as "Mul" in NCFPS.
+
+multPoly := proc(F, G)
+  return simplifyPoly([seq(seq(
+      [fx[1]*gx[1], [op(fx[2]), op(gx[2])]], 
+    fx in F), gx in G)
+  ]);
+end proc;
+
+
+################################################################
+
+# addPoly(F,G): F+G (addition)--simplified.
+# -- Same as "Khaber" from NCFPS
+
+addPoly := proc(F,G)
+  return simplifyPoly([op(F), op(G)]);
+end proc;
+
+################################################################
+
+# subtractPoly(F,G): F-G (subtraction)--simplified.
+
+subtractPoly := proc(F,G)
+  return addPoly(F, sMulPoly(-1,G));
+end proc;
+
+################################################################
+
+# coeffPoly(m,F): coefficient of monomial m in polynomial F.
+
+coeffPoly := proc(m,F)
+  local t, F1 := simplifyPoly(F);
+  for t in F1 do
+    if t[2] = m then
+      return t[1];
+    end if;
+  end do;
+  return 0;
+end proc;
+
+################################################################
+
+# subscPoly(S,F): simplifies the coeffs in F using substitution
+#   rules S (using "subs"), and evalc().
+#   Example:
+#     F := [[w^3, [x]]] (eqv. to (w^3)*x),
+#     S := w^6=1
+#     subscPoly(S,F) = [[-1,[x]]] (eqv. to -x). 
+
+subscPoly := proc(S,F)
+  local t, P := [];
+  for t in F do
+    P := [op(P), [evalc(subs(S, t[1])), t[2]]];
+  end do;
+  return simplifyPoly(P);
+end proc;
+
+################################################################
+
+# evalcPoly(F): simplifies the coeffs in F using evalc().
+
+evalcPoly := proc(F)
+  local t, P := [];
+  for t in F do
+    P := [op(P), [evalc(t[1]), t[2]]];
+  end do;
+  return simplifyPoly(P);
+end proc;
+
+################################################################
+
+# coeffPoly(m,P): Finds the coefficient of the monomial m 
+#   in the polynomial P. Returns 0 if the monomial is not present.
+# Example: coeffPoly([x,y], [[2,[x,y]], [1,[x]]]) = 2
+#
+coeffPoly := proc(m, P)
+  local Q;
+  Q := select(x->x[2]=m, P);
+  Q := simplifyPoly(Q);
+  if nops(Q) = 0 then
+    return 0;
+  elif nops(Q) > 1 then
+    return FAIL;
+  end if;
+  return Q[1][1];
+ end proc;
+ 

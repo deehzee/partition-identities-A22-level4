@@ -1,0 +1,112 @@
+################################################################
+#
+# File: npolysubs.txt
+#
+# Rewriting Noncommutative Polynomials Using Substitution Rules
+# ============================================================
+#
+# Author: Debajyoti Nandi
+#
+# This file codes rewriting noncommutative polynomials using
+# substitution rules of monomials. For example, if we have
+# the rule x.y.x=1, then x.x.y.x.y reduces to x.y.
+#
+# Rules
+# =====
+# 
+# Rules are of the form 
+#   Monomial --> Polynomial
+#
+# Assume that R is a rule (or a patterns of similar rules)
+#   m --> P, where m is a monomial, and P is a polynomial.
+#
+# Rules are coded (implemented) as a triplet:
+#   R := [len, find(), substt()], 
+# where:
+#   len: the length (or degree) of the monomial m;
+#   find(F): finds first place matching the monomial m in the 
+#     polynomial F;
+#   substt(m): returns the RHS P, (m assumed be the LHS of R).
+#
+# Special thanks to Matthew Russels for pointing out NCFPS
+# package, and getting me started.
+#
+# Requires: npolyio.txt.
+#
+# Provides
+# ========
+# 
+# rewritePoly(F,Rules): Rewrites the polynomial F, using
+#   rules in the set (or list) of rules in Rules. If this
+#   procedure terminates, then it returns a reduced polynomial
+#   where no more matching rules in Rules applies. There is
+#   no guarantee that this will terminate, in case there are
+#   cyclical substitutions possible with the rules.
+#
+# lenRule(R): returns the length of the monomial on the LHS
+#   of the rule R.
+#
+# findMatchRule(m,R): finds the first place in the monomial m,
+#   where the rule R applies.
+# 
+# subsRule(m,R): returns the RHS (polynomial) of the rule R.
+#
+# Note
+# ====
+# 
+# Note monomials may be composed of indexed variables 
+# (infinitely many indeterminates), but rules should be 
+# described by finitely many patterns. See the file
+# "A22-rules.txt" for examples.
+#
+# The last three procedures are used so that rewritePoly(),
+# does not have to be changed, if one decides to re-implement
+# rules. In that case, only the last three auxiliary
+# procedures need to be modified.
+#
+################################################################
+
+# lenRule(R): degree of the monomial on the LHS of the rule R.
+lenRule := R -> R[1];
+
+# findMatchRule(m,R): finds the first place in the monomial m, 
+# where the rule R applies.
+findMatchRule := (m,R) -> R[2](m);
+
+# subsRule(m,R): returns the RHS of the rule (m --> P).
+subsRule := (m,R) -> R[3](m);
+
+################################################################
+
+rewritePoly := proc(F,Rules)
+  local AllDone, NotDone, found, R, pre, suf, m, G, H, t, i;
+  AllDone := []; #terms that are straightened
+  NotDone := simplifyPoly(F); #terms that are not yet straightened
+  
+  while NotDone <> [] do
+    t := NotDone[1];
+    H := [];
+    found := false; # no matching rule found
+    
+    for R in Rules while not found do
+      i := findMatchRule(t[2], R);
+      if i > 0 then
+        found := true;
+        pre := t[2][1..i-1];
+        m := t[2][i..lenRule(R)+i-1];
+        suf := t[2][lenRule(R)+i..];
+        G := subsRule(m,R);
+        H := multPoly(multPoly([[t[1],pre]], G), [[1,suf]]);
+      end if;
+    end do;
+    
+    NotDone := simplifyPoly([op(2.., NotDone), op(H)]);
+    if not found then
+      AllDone := [op(AllDone), t];
+    end if;
+  end do;
+  
+  AllDone := simplifyPoly(AllDone);
+  return simplifyPoly(AllDone);
+end proc;
+

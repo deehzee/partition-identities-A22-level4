@@ -1,0 +1,123 @@
+#################################################################
+#
+# File: cha.txt
+#
+# Author: Debajyoti Nandi
+#
+# Generating Partitions of n into k parts, based on 
+#   Sung-Huyk Cha, "Recursive algorithms for generating 
+#   partitions of an integer", 2011
+#
+# Link:
+#  http://support.csis.pace.edu/CSISWeb/docs/techReports/
+#  techReport280.pdf
+#
+#
+# The main functions:
+#   listkPartitions(n,k): lists the partitions of n into k 
+#     parts in ascending lexicographic order. A partition is 
+#     represented as a non-increasing list (aka, descending 
+#     composition).
+#
+#   Example: listkPartitions(8,3)  
+#   => [[3,3,2],[4,2,2],[4,3,1],[5,2,1],[6,1,1]]
+#
+#   allPartitions(n): lists all partitions of n, in ascending
+#     order (with respect to ">" on P). Each partition is 
+#     represented as a non-increasing list.
+#
+#   Example: allPartitions(5)
+#   => [[1,1,1,1,1],[2,1,1,1],[2,2,1],[3,1,1],[3,2],[4,1],[5]]
+#
+#################################################################
+
+# The maximum number to be partitioned
+_N := 100;
+
+# The list to hold the current partition being generated
+_p := [0$_N];
+
+# The list to hold the generated partitions
+_L := [];
+
+# resetL(): Resets the global variable _L
+_resetL := proc()
+  global _L := [];
+end proc;
+
+# _P(n,k,visit): - Generates partitions of n into k parts, 
+#   and calls  the function visit() each time a partition is 
+#   generated.
+#
+_P := proc(n,k,visit)
+  if n >= k then
+    _R(n, k, n-k+1, 1, visit);
+  end if;
+end proc;
+
+# _R(n,k,s,t,visit): Recursive backbone of _P(), generates 
+#   partitions of n into k parts, with the largest part s, 
+#   (t is the position index where this partitions is to be 
+#   added in _p). visit() is as above.
+#
+# The following invariant is always true:
+#   ceil(n/k) <= s <= n-k+1.
+#
+_R := proc(n,k,s,t,visit)
+  global _p;
+  local i;
+  
+  if k=1 then
+    _p[t] := n;
+    visit(t);
+    return;
+  end if;
+  
+  for i from ceil(n/k) to s do
+    _p[t] := i;
+    _R(n-i, k-1, min(i, n-i-k+2), t+1, visit);
+  end do;
+end proc;
+
+# _listIt(t) - The visitor function that puts the constructed
+#   partition into the list _L, t is the length of the current
+#   partition.
+#
+_listIt := proc(t)
+  global _p, _L;
+  _L := [op(_L), _p[1..t]];
+end proc;
+
+# listkPartitions(n,k): Returns a list of partitions of n into
+#   k parts. The partitions are represented as non-increasing 
+#   lists. The partitions are arranged in ascending 
+#   lexicographical order.
+#
+# Example: listkPartitions(8,3) 
+# => [[3,3,2],[4,2,2],[4,3,1],[5,2,1],[6,1,1]]
+#
+listkPartitions := proc(n,k)
+  global _L;
+  local L;
+  _restetL();
+  _P(n,k,_listIt);
+  L := _L;
+  _resetL();
+  return L;
+end proc;
+
+#   allPartitions(n): lists all partitions of n, in ascending
+#     order (with respect to ">" on P). Each partition is 
+#     represented as a non-increasing list.
+#
+#   Example: allPartitions(5)
+#   => [[1,1,1,1,1],[2,1,1,1],[2,2,1],[3,1,1],[3,2],[4,1],[5]]
+#
+allPartitions := proc(n)
+  local L := [], k;
+  for k from n to 1 by -1 do
+    L := [op(L), op(listkPartitions(n,k))];
+  end do;
+  return L;
+end proc;
+

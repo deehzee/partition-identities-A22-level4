@@ -1,0 +1,189 @@
+#################################################################
+#
+# File: npolyio.txt
+#
+# Author: Debajyoti Nandi
+#
+# Input and Output of Noncommutative Polynomials
+# ==============================================
+#
+# This maple programs read a polynomial (assumed noncommutative)
+# in certain format and converts it to an internal data structure
+# representing this polynomial. The data structure used is the 
+# same as that used in NCFPS of Zeilberger:
+# 
+# Link: http://www.math.rutgers.edu/~zeilberg/tokhniot/NCFPS
+#
+# The purpose of this file is to make the input/output 
+# of noncommutative polynomials easier to human beings.
+#
+# Data Structure
+# ==============
+# 
+# Monomial: A monomial is a (noncommutative) product in 
+# indeterminates. A monomial is represented as a list.
+# For example, x.y.y.x -> [x,y,y,x]
+#
+# Term: A term is a constant times a monomial, i.e., t=c*m,
+#   where c is a constant and m is a monomial. A term is 
+#   represented as t = [c, m]. 
+#   For example, -2x.y.x -> [-2, [x,y,x]].
+#
+# Polynomial: A polynomial is a sum of terms, represented as a
+#   list of monomials: p = [t1,t2,...,tn]
+#   For example, x.y-y.x -> [[1,[x,y]], [-1,[y,x]]].
+#
+# Input Format
+# ============
+#
+# Constant terms: A constant term must be inputed as c*Id.
+#
+# Terms: If the coefficient is 1, then it can be ommited. 
+# Otherwise, input in the form: (examples)
+#     3*(x.y.y.x), (y^2).z, a*(x.x.y.x), 2*Id etc.
+#   Note that if a symbol is used for the constant it is assumed 
+#   to be a commutative symbol ("a" in the third example above)
+#   A bracket must be used if more than one symbol is multiplied 
+#   in the monomial.
+#
+# Polynomial: (Example)
+#   3*(x.y.y.x) - 2*x + z.x.y + 5*Id.
+#   3*((x^2).y.z)
+#
+# This polynomial will be read and converted ot internal data
+# structure as:
+#   [[3,[x,y,y,x]], [-2,[x]], [1,[z,x,y]], [5,[]]]
+#   [[3,[x,x,y,z]]]
+#
+# Output Format
+# =============
+#
+# An internal representation of a noncommutative polynomial
+# is converted back to maple expression using '*' and '.'.
+# For example,
+#   [[2,[]], [-1,[x,y]] + [1,[y,y]]] --> 2 - x.y + y^2.
+#
+# Provides
+# ========
+# 
+# parsePoly(f): returns the internal representation of the
+#   noncommutative polynomial f (see "input format" above).
+#
+# writePoly(P): returns an expression using '*' and '.'
+#   to express the internal representation of a noncommutative
+#   polynomial P in better-to-read format (see "output format").
+#
+# Disclaimer
+# ==========
+#
+# No sanity check is done. No error message is issued if 
+# the input is invalid (not conforming to the "input format"
+# above).
+#
+#################################################################
+
+### Input ###
+
+# splitPow(p): If p is a power in an indeterminate, then it splits
+#   it into a sequence of factors.
+# Example: x^3 -> x,x,x
+
+splitPow := proc(p)
+  if p::`^` then
+    return seq(op(1,p), i=1..op(2,p));
+  else
+    return p;
+  end if;
+end proc;
+
+
+# splitMono(m): Splits a monomial m, returning a list of its 
+#   factors.
+# Examples: x.x.y.x -> [x,x,y,x], Id -> []
+
+splitMono := proc(m)
+  if m = Id then
+    return [];
+  elif m::`.` then
+    return map(splitPow, [op(1.., m)]);
+  else
+    return [splitPow(m)];
+  end if;
+end proc;
+
+
+# splitTerm(t): Splits a term into a list with the coefficient
+#   as the first element, and the monomial as the second.
+# Examples: 
+#   2*(x.y) -> [2, x.y], 3*Id -> [3, Id], x.y.y -> [1, x.y^2]
+
+splitTerm := proc(t)
+  if t::`*` then
+    return [`*`(op(1..nops(t)-1, t)), op(-1,t)];
+  else
+    return [1,t];
+  end if;
+end proc;
+
+
+# splitPoly(f): Splits a polynomial f into terms
+# Example: x.y.y.x + 2*x - Id -> [x.y^2.x, 2*x, -Id]
+
+splitPoly := proc(f)
+  if f::`+` then
+    return [op(1.., f)];
+  else
+    return [f];
+  end if;
+end proc;
+
+
+# parsePoly(f): reads a polynomial in the input format, and
+#   returns its representation in the above data structure.
+# Example:
+#    x.y.y.x + 2*x - Id -> [[1, [x,y,y,x]], [2, [x]], [-1, []]]
+
+parsePoly := proc(f)
+  local P := [], T, t, L;
+
+  T := splitPoly(f);
+  for t in T do
+    L := splitTerm(t);
+    if t <> 0 then
+      P := [op(P), [L[1], splitMono(L[2])]]; 
+    end if;
+  end do;
+  
+  return P;
+end proc;
+
+
+#################################################################
+
+### Output ###
+
+# writeMono(m): expresses a monomial using `.`
+# Example: [x,y,y,x] -> x.y^2.x
+
+writeMono := proc(m)
+  return `.`(op(m));
+end proc;
+
+# writeTerm(t): expresses a term as prduct of the constant and
+#   the monomial using `*`
+# Example: [a, [x.y.y.x]] -> a * x.y^2.x
+
+writeTerm := proc(t)
+  return t[1] * writeMono(t[2]);
+end proc;
+
+# writePoly(f): expresses an internal representation of a 
+#   polynomial f in human readable format.
+# Example:
+#   [[1, [x,y,y,x]], [2, [x]], [-1, []]] -> x.y^2.x + 2*x - 1
+
+writePoly := proc(F)
+  local L := map(writeTerm, F);
+  return `+`(op(L));
+end proc;
+

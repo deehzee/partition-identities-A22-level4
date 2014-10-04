@@ -1,0 +1,133 @@
+################################################################
+#
+# File: coeffs.txt
+#
+# Author: Debajyoti Nandi
+#
+# This file includes code for generating the coefficients
+# of X(-L) in various generating function identities, L is
+# a partition of n.
+#
+# _genCoeff(deg, Spec, L):
+#  This procedure computes the coefficient of X(-L) in the
+#  product generating function (of degree deg)
+#     X(v^i.a)X(v^j.a)...
+#  deg = # of factors
+#  Spec = [i,j...] the powers of nu (v) that appears above
+#  L = a partition of n into deg parts.
+#
+# ca(L): coefficient of X(-L) (L is a partition into two parts) 
+#        in X(a,a) [Spec=[0,0]];
+#
+# cb(L): coefficient of X(-L) (L is a partition into two parts) 
+#        in X(-a,-a) [Spec=[3,3]]
+#
+# c(L): coefficient of X(-L) (L is a partition into two parts) 
+#        in X(a,a) - E^-(-a)X(-a,-a)E^+(a)
+#
+# c1a(L): coefficient of X(-L) (L is a triplet) in 
+#         X(a,a,a) [Spec=[0,0,0]]
+#
+# c1b(L): 0 (the LHS has deg = 1 < 3)
+#
+# c1(L): same as c1a
+#
+# c2a(L): coefficient of X(-L) (L is a triplet) in
+#         X(a,a,v.a) [Spec=[0,0,1]]
+#
+# c2b(L): 0 (the LHS has deg = 2 < 3)
+#
+# c2(L): same as c2a;
+#
+# c3a(L): coefficient of X(-L) (L is a triplet) in
+#         X(a,v.a,v.a) [Spec=[0,1,1]]
+#
+# c3b(L): coefficient of X(-L) (L is a triplet) in
+#         X(-a,v^2.a,v^2.a) [Spec=[3,2,2]]
+#
+# c3(L): coefficient of X(-L) (L is a triplet) in
+#         X(a,a,v.a) - E^-(-a)X(-a,v^2.a,v^2.a)E^+(-a)
+#
+# c4a(L): coefficient of X(-L) (L is a triplet) in
+#         X(a,v.a,v^(-1).a) [Spec=[0,1,-1]]
+#
+# c4b(L): coefficient of X(-L) (L is a triplet) in
+#         X(-a,v^2.a,v^(-2).a) [Spec=[3,2,-2]]
+#
+# c4(L): coefficient of X(-L) (L is a triplet) in
+#        X(a,v.a,v^(-1).a) - E^-(-a)X(-a,v^2.a,v^(-2).a)E^+(-a)
+#
+################################################################
+
+# _genCoeff(deg, Spec, L):
+#  This procedure computes the coefficient of X(-L) in the
+#  product generating function (of degree deg)
+#     X(v^i.a)X(v^j.a)...
+#  deg = # of factors
+#  Spec = [i,j...] the powers of nu (v) that appears above
+#  L = a partition of n into deg parts.
+#
+_genCoeff := proc(deg, Spec, L)
+  local i, x, m, M, L1, Vars, C, P;
+  local w := exp(2*Pi*I/6);
+  
+  if deg <> nops(Spec) or deg <> nops(L) then
+    return FAIL;
+  end if;
+  
+  # distinct elements of L
+  L1 := [op({op(L)})];
+  
+  # m[x] = multiplicity of x in L
+  for x in L1 do
+    m[x] := nops(select(`=`, L, x));
+  end do;
+  
+  # sort the list of multiplicities
+  M := sort([seq(m[x], x in L1)],`>`);
+  
+  # sort the parts in L by multiplicities.
+  L1 := sort(L1, (x,y)-> m[x]>m[y] or (m[x]=m[y] and x>y));
+  
+  # generating the appropriate polynomial
+  Vars := [seq(`x`||i, i=1..nops(L1))];
+  for i from 1 to deg do
+    C[i] := [seq(w^(-Spec[i]*x), x in L1)];
+    P[i] := `+`(seq(C[i][j]*Vars[j], j=1..nops(L1)));
+  end do;
+  P[0] := `*`(seq(P[i], i=1..deg));
+  
+  # return the appropriate coefficient
+  return evalc(coeftayl(P[0], Vars = [0$nops(L1)], M));
+end proc;
+
+################################################################
+#
+# Coefficients in the degree 2 identities:
+#
+
+ca := L -> _genCoeff(2, [0,0], L);
+cb := L -> _genCoeff(2, [3,3], L);
+c := L -> evalc(ca(L)-cb(L));
+
+################################################################
+#
+# Coefficients in the degree 3 identities:
+#
+
+c1a := L -> _genCoeff(3, [0,0,0], L);
+c1b := L -> 0;
+c1 := c1a;
+
+c2a := L -> _genCoeff(3, [0,0,1], L);
+c2b := L -> 0;
+c2 := c2a;
+
+c3a := L -> _genCoeff(3, [0,1,1], L);
+c3b := L -> _genCoeff(3, [3,2,2], L);
+c3 := L -> evalc(c3a(L) - c3b(L));
+
+c4a := L -> _genCoeff(3, [0,1,-1], L);
+c4b := L -> _genCoeff(3, [3,2,-2], L);
+c4 := L -> evalc(c4a(L) - c4b(L));
+

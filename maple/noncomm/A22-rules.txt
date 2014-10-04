@@ -1,0 +1,539 @@
+################################################################
+#
+# File: A22-rules.txt
+#
+# Author: Debajyoti Nandi
+#
+# This files includes all rules needed for computations
+# in the algebra $A_2^(2)$, or in their level 4 standard
+# modules.
+#
+# Note:
+#   w: 6th primitive root of unity,
+#   w0: 12 the primitive root of unity (s.t. w0^2 = w).
+# In this file their values are not set.
+#
+# Types of Rules
+# ==============
+# 
+# (Sec A): Rules given by the mapping of the Chevalley
+#    generators in terms of vertex operators.
+# Risom = the set of rules in Sec A.
+#
+# (Sec B): Bracket rules of the vertex operators.
+# Rvop = the set of rules in Sec B.
+#
+# (Sec C): Bracket rules of the chevalley generators.
+# Rgen = the set of rules in Sec C.
+#
+# (Sec D): Rules for all std modules, given by, positive degree
+#    elements of A2(2) annihilates the highest weight vector
+#    v[0] (i.e., e[i].v[0] = 0 for i=0,1).
+#  We don't need the corresponding rules in terms of the
+#  vertex operators, since we will only use negative
+#  degree operators (when applying in terms of the vertex
+#  operators) on v[0]. 
+#
+# (Sec E): Rules spicific to level 4 standard modules (i.e.,
+#    h[0].v[0] = k0*v[0], h[1].v[0] = k1*v[0] in the  
+#    (k0,k1)-module). Note that the conditions
+#    (f[0]^(k0+1)).v[0] = (f[1]^(k1+1)).v[0] = 0
+#    follows from the action of h on v[0] and the Lie 
+#    brackets of the Chevalley generators.
+# -- (Sec E40): for (4,0)-module;
+# -- (Sec E21): for (2,1)-module;
+# -- (Sec E02): for (0,2)-module.
+# These rules are also in terms of the Chevalley generators only.
+#
+# RgenV<k0,k1>: The set of rules for the (k0,k1)-modules
+#   in terms of the Chevalley generators. These rules
+#   enables us to express any vector in V as a 
+#   linear combination of vectors of the form
+#     f[n1]..f[nk].v[0]; n[1],...,n[k] = 0,1.
+#   These rules are union of the rules in Sec C, Sec D, and
+#   Sec E<k0,k1>.
+#
+# Auxiliary data/functions:
+# -- A22: generalized Cartan Matrix for A2(2);
+# -- delta(i,j): delta function;
+# -- d6(i): 1 (if i congruent to 1,-1 mod 6), 0 (otherwise).
+# -- omega(i,j): (w^2/6)*(w^(j-i) - w^(i-j))
+#
+# Note: (1) We use the rules "Risom" and "Rvop" to check the 
+# isomorphism of $A2(2)$,in terms of the vertex operatros. 
+#   (2) We use rules "Rgen", "RgenV<k0,k1>" and "Rvop" for our
+# investigation of initial conditions in various level 4 
+# standard modules.
+
+############################ Sec: A #############################
+
+# (Sec A): Rules given by the mapping of the Chevalley 
+#    generators in terms of the vertex operators.
+
+# rh0: h[0] --> (4*sqrt(3)/w0)*X[0] + (2/3)*c
+rh0 := [
+  1, #length
+  
+  proc(m) #find in m
+    local i;
+    for i from 1 to nops(m) do
+      if m[i] = h[0] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[4*sqrt(3)/w0,[X[0]]], [2/3,[c]]]
+];
+
+# rh1: h[1] --> (-2*sqrt(3)/w0)*X[0] + (1/6)*c
+rh1 := [
+  1, #length
+  
+  proc(m) #find h[1] in m
+    local i;
+    for i from 1 to nops(m) do
+      if m[i] = h[1] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[-2*sqrt(3)/w0,[X[0]]], [1/6,[c]]]
+];
+
+# re0: e[0] --> (-2*sqrt(2)/w0)*X[1] + (2*sqrt(2)/sqrt(3))*a[1]
+re0 := [
+  1, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m) do
+      if m[i] = e[0] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+
+  #substt
+  m -> [[-2*sqrt(2)/w0,[X[1]]], [2*sqrt(2)/sqrt(3),[a[1]]]]
+];
+
+# re1: e[1] --> (2/w0)*X[1] + (1/sqrt(3))*a[1]
+re1 := [
+  1, #length
+
+  proc(m) #find match
+    local i;
+    for i from 1 to nops(m) do
+      if m[i] = e[1] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+
+  #substt
+  m -> [[2/w0,[X[1]]], [1/sqrt(3),[a[1]]]]
+];
+
+# rf0: f[0] --> (2*sqrt(2)/w0)*X[-1] + (2*sqrt(2)/sqrt(3))*a[-1]
+rf0 := [
+  1, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m) do
+      if m[i] = f[0] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+
+  #substt
+  m -> [[2*sqrt(2)/w0,[X[-1]]], [2*sqrt(2)/sqrt(3),[a[-1]]]]
+];
+
+# rf1: f[1] -> (-2/w0)*X[-1] + (1/sqrt(3))*a[-1]
+rf1 := [
+  1, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m) do
+      if m[i] = f[1] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[-2/w0,[X[-1]]], [1/sqrt(3),[a[-1]]]]
+];
+
+Risom := {rh0,rh1,re0,re1,rf0,rf1};
+
+############################ Sec: B #############################
+
+# (Sec B): Bracket rules of the vertex operators.
+
+d6 := i -> if i mod 6 in {1,5} then 1 else 0 end if;
+
+omega := (i,j) -> if j-i mod 6 in {0,3} then 0
+                  elif j-i mod 6 in {1,2} then -w0*sqrt(3)/6
+                  else w0*sqrt(3)/6
+                  end if;
+
+# rcx: c.x --> x.c (x=X[*] or a[*])
+rcx := [
+  2, #length 
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if m[i]=c and (op(0,m[i+1])=a or op(0,m[i+1])=X) then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[1,[m[2],m[1]]]]
+];
+
+# raa: a[i].a[j] --> a[j].a[i] + (delta(i+j,0)*i/6)*c, i>j
+raa := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if op(0,m[i])=a and op(0,m[i+1])=a and 
+      op(1,m[i]) > op(1,m[i+1]) then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> simplifyPoly([[1,[m[2],m[1]]], 
+    [delta(op(1,m[1])+op(1,m[2]),0)*op(1,m[1])/6,[c]]])
+];
+
+# raX: a[i].X[j] --> X[j].a[i] + d6(i)*X[i+j], i>0
+raX := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if op(0,m[i])=a and op(0,m[i+1])=X and op(1,m[i])>0 then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> simplify([[1,[m[2],m[1]]],
+    [d6(op(1,m[1])), [X[op(1,m[1])+op(1,m[2])]]]])
+];
+
+# rXa: X[i].a[j] --> a[j].X[i] - d6(j)*X[i+j], j<0
+rXa := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if op(0,m[i])=X and op(0,m[i+1])=a and op(1,m[i+1])<0 then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m ->  simplify([[1,[m[2],m[1]]],
+    [-d6(op(1,m[2])), [X[op(1,m[1])+op(1,m[2])]]]])
+];
+
+# rXX: X[i].X[j] --> X[j].X[i] + omega(i,j)*X[i+j]
+#                    -((-1)^i*d6(i+j)*w/6)*a[i+j]
+#                    + ((-1)^i*i*delta(i+j,0)*w/36)*c, i>j
+rXX := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if op(0,m[i])=X and op(0,m[i+1])=X and
+      op(1,m[i]) > op(1,m[i+1]) then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m ->  simplify([[1,[m[2],m[1]]],
+    [omega(op(1,m[1]),op(1,m[2])),[X[op(1,m[1])+op(1,m[2])]]],
+    [-(-1)^op(1,m[1])*d6(op(1,m[1])+op(1,m[2]))*w/6,
+      [a[op(1,m[1])+op(1,m[2])]]],
+    [(-1)^op(1,m[1])*op(1,m[1])*delta(op(1,m[1])+op(1,m[2]),0)*
+      w/36, [c]]])
+];
+
+Rvop := {rcx,raa,raX,rXa,rXX};
+
+############################ Sec: C #############################
+
+# (Sec C): Bracket rules of the Chevalley generators.
+
+# Generalized Cartan's Matrix for A2(2)
+A22 := table([(0,0)=2, (0,1)=-4, (1,0)=-1, (1,1)=2]);
+
+# delta function
+delta := (i,j) -> if i=j then 1 else 0 end if;
+
+# rhh: h[0].h[1] --> h[1].h[0] 
+rhh := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if m[i..i+1] = [h[0],h[1]] then
+        return i;
+      end if;
+    end do;  
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[1,[h[1],h[0]]]]
+];
+
+# rhe: h[i].e[j] --> e[j].h[i] + a22[i,j]*e[j], i,j=0,1
+rhe := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if op(0,m[i])=h and op(0,m[i+1])=e then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+    
+  #substt
+  m -> [[1,[m[2],m[1]]], [A22[op(1,m[1]),op(1,m[2])],[m[2]]]]
+];
+
+# rhf: h[i].f[j] --> f[j].h[i] - A22[i,j]*f[j], i,j=0,1
+rhf := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if op(0,m[i])=h and op(0,m[i+1])=f then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[1,[m[2],m[1]]], [-A22[op(1,m[1]),op(1,m[2])],[m[2]]]]
+];
+
+# ref: e[i].f[j] --> f[j].e[i] + delta(i,j)*h[i]
+ref := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if op(0,m[i])=e and op(0,m[i+1])=f then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> simplifyPoly([[1,[m[2],m[1]]], 
+        [delta(op(1,m[1]),op(1,m[2])),[h[op(1,m[1])]]]])
+];
+
+Rgen := {rhh,rhe,rhf,ref};
+
+############################ Sec: D #############################
+
+# (Sec D): Rules for all std modules, given by, positive degree
+#    elements of A2(2) annihilates the highest weight vector
+#    v[0] (i.e., e[i].v[0] = 0 for i=0,1).
+#    We don't need the corresponding rules in terms of the
+#    vertex operators, since we will only use negative
+#    degree operators (when applying in terms of the vertex
+#    operators) on v[0].
+
+# rev: e[*].v[0] --> 0
+rev := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if op(0,m[i])=e and m[i+1]=v[0] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> []
+];
+
+############################ Sec: E #############################
+
+# (Sec E): Rules spicific to level 4 standard modules (i.e.,
+#    h[0].v[0] = k0*v[0], h[1].v[0] = k1*v[0] in the  
+#    (k0,k1)-module). Note that the conditions
+#    (f[0]^(k0+1)).v[0] = (f[1]^(k1+1)).v[0] = 0
+#    follows from the action of h on v[0] and the Lie 
+#    brackets of the Chevalley generators.
+
+### (Sec E40): for (4,0)-module;
+
+# rh0v40: h[0].v[0] --> 4*v[0]
+rh0v40 := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if m[i..i+1] = [h[0],v[0]] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[4,[v[0]]]]
+];
+
+# rh1v40: h[1].v[0] --> 0
+rh1v40 := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if m[i..i+1] = [h[1],v[0]] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> []
+];
+
+RgenV40 := Rgen union {rev, rh0v40, rh1v40};
+
+### (Sec E21): for (2,1)-module;
+
+# rh0v21: h[0].v[0] --> 2*v[0]
+rh0v21 := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if m[i..i+1] = [h[0],v[0]] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[2,[v[0]]]]
+];
+
+# rh1v21: h[0].v[0] --> v[0]
+rh1v21 := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if m[i..i+1] = [h[1],v[0]] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[1,[v[0]]]]
+];
+
+RgenV21 := Rgen union {rev, rh0v21, rh1v21};
+
+### (Sec E02): for (0,2)-module;
+
+# rh0v02: h[0].v[0] --> 0
+rh0v02 := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if m[i..i+1] = [h[0],v[0]] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> []
+];
+
+# rh1v02: h[1].v[0] --> 2*v[0]
+rh1v02 := [
+  2, #length
+  
+  proc(m) #find
+    local i;
+    for i from 1 to nops(m)-1 do
+      if m[i..i+1] = [h[1],v[0]] then
+        return i;
+      end if;
+    end do;
+    return 0;
+  end proc,
+  
+  #substt
+  m -> [[2,[v[0]]]]
+];
+
+RgenV02 := Rgen union {rev, rh0v02, rh1v02};
+
