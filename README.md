@@ -167,7 +167,9 @@ three proposed partition identities.
 The C program to verify the partition identities
 (upto _n=200_). It generates the partitions (in 
 ascending order) using Kelleher's 
-_accelerated ascending rule_ algorithm. Once a partition
+_accelerated ascending rule_ algorithm
+(see [[Kel06]](http://jeromekelleher.net/downloads/k06.pdf))
+Once a partition
 is generated, then it is scanned to see if it is reducible
 or not for each of the three standard modules of level 4
 for A(2)2.
@@ -195,13 +197,16 @@ _n = 200_.
 [[Cha11]](http://support.csis.pace.edu/CSISWeb/docs/techReports/techReport280.pdf) S.-H. Cha, _Recursive algorithm for generating partitions of an integer_, tech. rep. 280, Pace University, Seidenberg School of Computer Science and
 Information Systems, 2011.
 
+[[Kel06]](http://jeromekelleher.net/downloads/k06.pdf)
+J. Kelleher, “Encoding partitions as ascending compositions,” PhD thesis,
+University College Cork, 2006.
+
 [[NCFPS]](http://www.math.rutgers.edu/~zeilberg/tokhniot/NCFPS)
 D. Zeilberger, _Noncommutative formal power series Maple package_, http://www.math.rutgers.edu/~zeilberg/tokhniot/NCFPS.
 
 [[Rus13]](http://arxiv.org/abs/1311.1141v2) M. C. Russell, “Noncommutative recursions and the Laurent phenomenon,”
 arXiv preprint arXiv:1311.1141v2 (2013), url: http://arxiv.org/abs/
 1311.1141v2.
-
 
 [[Russell]](http://www.math.rutgers.edu/~russell2)
 Homepage of M. C. Russell:  http://www.math.rutgers.edu/~russell2
