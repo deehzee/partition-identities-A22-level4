@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Partition-identities-a22-level4 : Computer programs used in my PhD thesis: &quot;Partition identities arsing from the standard A(2)2-modules of level 4.&quot;">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Partition-identities-a22-level4</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/deehzee/partition-identities-A22-level4">View on GitHub</a>
+
+          <h1 id="project_title">Partition-identities-a22-level4</h1>
+          <h2 id="project_tagline">Computer programs used in my PhD thesis: &quot;Partition identities arsing from the standard A(2)2-modules of level 4.&quot;</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/deehzee/partition-identities-A22-level4/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/deehzee/partition-identities-A22-level4/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="programs-used-in-partition-identities-arising-from-standard-a22-modules-of-level-4" class="anchor" href="#programs-used-in-partition-identities-arising-from-standard-a22-modules-of-level-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Programs used in "Partition identities arising from standard A(2)2-modules of level 4"</h1>
+
+<p>These are the computer programs used in my PhD thesis: 
+"Partition identities arsing from the standard 
+A(2)2-modules of level 4" (Rutgers University). The 
+abstract and the introduction of the above thesis are
+included in <code>thesisAbsIntro.pdf</code>.</p>
+
+<p>A <em>partition</em> of a nonnegative integer <em>n</em> into <em>k</em> parts 
+is a non-increasing <em>k</em>-tuple (<em>p_1, ..., p_k</em>) of 
+nonnegative integers such that </p>
+
+<pre><code>    n = p_1 + ... + p_k.
+</code></pre>
+
+<p>The number <em>n</em> will be referred to as the <em>size</em> of the 
+partition. The number <em>k</em> is referred to as the <em>length</em> 
+of the partition. And the entries <em>p_1</em>, ..., <em>p_k</em> are 
+called the <em>parts</em> of the partition.</p>
+
+<p>A partition <em>(p_1, ..., p_k)</em> is said to satisfy a 
+difference condition <em>[d_1, ...,d_{k−1}]</em> if
+<em>p_i − p_{i+1} = d_i</em> for all <em>i</em> such that 
+<em>1 ≤ i ≤ (k−1)</em>.</p>
+
+<p>For example, the partition <em>(7,2)</em> satisfies the 
+difference condition <em>[5]</em>. The partition <em>(11,8,8)</em> 
+satisfies the difference condition <em>[3,0]</em>, and so on.</p>
+
+<p>Some times, we may use an <code>*</code> (asterisk) on an entry of the 
+difference condition to denote <em>zero</em> or <em>more</em> occurrence 
+of that entry. For example, consider the difference 
+condition <em>[3,2*,3,0]</em>. This may be expanded into the 
+following difference conditions: <em>[3,3,0]</em>, <em>[3,2,3,0]</em>, 
+<em>[3,2,2,3,0]</em>, ... and so on.</p>
+
+<p>The three partition identities we proposed --- arising from the three inequivalent standard modules of level 4 for the affine Lie algebra A(2)2 --- may be stated as follows.</p>
+
+<ul>
+<li><p><strong>(4,0)-module</strong>:
+The number of partitions of a nonnegative integer <em>n</em> into 
+parts different from <em>1</em> and such that there is no 
+sub-partition satisfying the difference
+conditions <em>[1], [0,0], [0,2], [2,0]</em> or <em>[0,3]</em>, 
+and such that there is no sub-partition with an odd sum 
+of parts satisfying the difference conditions 
+<em>[3,0]</em>, <em>[0,4]</em>, <em>[4,0]</em> or <em>[3,2*,3,0]</em>
+(where <em>2*</em> indicates zero or more occurrence of <em>2</em>), 
+is the same as the number of partitions of <em>n</em> into parts 
+congruent to <em>±2</em>, <em>±3</em> or <em>±4</em> modulo <em>14</em>.</p></li>
+<li><p><strong>(2,1)-module</strong>:
+The number of partitions of a nonnegative integer <em>n</em> such 
+that <em>1</em>, <em>2</em> and <em>3</em> may occur at most once as a part, and 
+such that there is no sub-partition satisfying the 
+difference conditions <em>[1]</em>, <em>[0,0]</em>, <em>[0,2]</em>, <em>[2,0]</em> or 
+<em>[0, 3]</em>, and such that there is no sub-partition with an 
+odd sum of parts satisfying the difference conditions 
+<em>[3,0]</em>, <em>[0,4]</em>, <em>[4,0]</em> or <em>[3,2*,3,0]</em> 
+(where <em>2*</em> indicates zero or more occurrence of <em>2</em>), 
+is the same as the number of partitions of <em>n</em> into parts
+congruent to <em>±1</em>, <em>±4</em> or <em>±6</em> modulo <em>14</em>.</p></li>
+<li><p><strong>(0,2)-module</strong>:
+The number of partitions of a nonnegative integer <em>n</em> into 
+parts different from <em>1</em> and <em>3</em>, such that <em>2</em> may occur 
+at most once as a part, and such that there is no 
+sub-partition satisfying the difference condition 
+<em>[3,2*]</em> (where <em>2*</em> denotes zero or more occurrence of 
+<em>2</em>) ending with a <em>2</em>, and such that there is no 
+sub-partition satisfying the difference conditions <em>[1]</em>, 
+<em>[0,0]</em>, <em>[0,2]</em>, <em>[2,0]</em> or <em>[0,3]</em>, and such that there 
+is no sub-partition with an odd sum of parts satisfying the 
+difference conditions <em>[3,0]</em>, <em>[0,4]</em>, <em>[4,0]</em> or 
+<em>[3,2*,3,0]</em>, is the same as the number of partitions of 
+<em>n</em> into parts congruent to <em>±2</em>, <em>±5</em> or <em>±6</em> modulo <em>14</em>.</p></li>
+</ul>
+
+<p>The codes are divided into three sections, corresponding to 
+the appendices of the thesis.</p>
+
+<h2>
+<a id="a-maple-programs-used-in-the-computation-of-relations" class="anchor" href="#a-maple-programs-used-in-the-computation-of-relations" aria-hidden="true"><span class="octicon octicon-link"></span></a>A: Maple programs used in the computation of relations</h2>
+
+<p><strong>Directory <code>maples/rels</code>:</strong> 
+The directory containing the Maple codes, used in the 
+computation of the relations.</p>
+
+<ul>
+<li><p><strong>File <code>rels.mw</code>:</strong> The Maple worksheet showing
+the computations.</p></li>
+<li><p><strong>File <code>cha.txt</code>:</strong> The maple codes to generate
+the partitions of a nonnegative integer <em>n</em> into
+<em>k</em> parts (based on <a href="http://support.csis.pace.edu/CSISWeb/docs/techReports/techReport280.pdf">[Cha11]</a>).</p></li>
+<li><p><strong>File <code>coef.txt</code>:</strong> The maple codes to compute the
+coefficients of various "standard monomials" in various
+"product generating functions."</p></li>
+<li><p><strong>File <code>test.txt</code>:</strong> Varous maple codes to automate
+the analysis of various deg 2 and deg 3 relations.</p></li>
+</ul>
+
+<h2>
+<a id="b-computation-in-noncommutative-algebra" class="anchor" href="#b-computation-in-noncommutative-algebra" aria-hidden="true"><span class="octicon octicon-link"></span></a>B: Computation in noncommutative algebra</h2>
+
+<p><strong>Directory <code>maple/noncomm</code>:</strong>
+The directory containing the computations related
+to straightening out and substitution of non-commuting
+variables.</p>
+
+<ul>
+<li><p><strong>File <code>isom.mw</code>:</strong>
+The Maple worksheet showing the verification of the
+isomorphism of the affine Lie algebra A(2)2 in terms of
+the vertex operators.</p></li>
+<li><p><strong>File <code>ini-A22-L4.mw</code>:</strong>
+The Maple worksheet showing the computations needed to
+prove the initial conditions for the three level 4 
+standard modules for A(2)2.</p></li>
+<li><p><strong>File <code>npolyio.txt</code>:</strong>
+The Maple codes to convert polynomials in non-commuting
+variables into the list representation and vice versa.
+Based on 
+<a href="http://www.math.rutgers.edu/%7Ezeilberg/">D. Zeilberger</a>'s <a href="http://www.math.rutgers.edu/%7Ezeilberg/tokhniot/NCFPS">NCFPS maple</a> package.</p></li>
+<li><p><strong>File <code>npolyops.txt</code>:</strong>
+The file implementing operations on polynomials with
+non-commuting variables. This file is slight modification
+of Zeilberger's <a href="http://www.math.rutgers.edu/%7Ezeilberg/tokhniot/NCFPS">NCFPS maple package</a>.</p></li>
+<li><p><strong>File <code>npolysubs.txt</code>:</strong>
+The Maple codes to substitute and rewrite a noncommutative
+polynomials based on substitution rules. The algorithm
+and codes are modification of <a href="http://www.math.rutgers.edu/russell2">M. Russell</a>'s code (see <a href="http://arxiv.org/abs/1311.1141v2">[Rus13]</a>). 
+It has been modified to accommodate indexed (infinitely
+many) variables and infinitely many rules (indexed),
+instead of finitely many variables and finitely many
+rules.</p></li>
+<li><p><strong>File <code>A22-rules.txt</code>:</strong>
+The maple codes implementing various rules related to
+the Lie brakcets in A(2)2 and various straightening out
+rules for the standard modules for A(2)2.</p></li>
+<li><p><strong>File <code>A22-L4-iniRules.txt</code>:</strong>
+The maple codes implementing various rules corresponding
+to the initial conditions as discovered in the Maple
+worksheet <code>maple/noncomm/ini-A22-L4.mw</code>.</p></li>
+<li><p><strong>File <code>misc.txt</code>:</strong>
+Miscellaneous maple codes used in the Maple worksheet
+<code>maple/noncomm/ini-A22-L4.mw</code>.</p></li>
+</ul>
+
+<p>This directory also contains the Maple worksheet file
+<code>A22-level4-grdim.mw</code>, that computes the graded 
+dimension for <em>n</em> upto 200, using power series expansion.
+The results have been copied to <code>c/verify/data.h</code>
+to verify the identities.</p>
+
+<h2>
+<a id="c-verification-of-the-partition-identities" class="anchor" href="#c-verification-of-the-partition-identities" aria-hidden="true"><span class="octicon octicon-link"></span></a>C: Verification of the partition identities</h2>
+
+<p><strong>Directory <code>c/verify</code>:</strong>
+The directory containing the C program to verify the
+three proposed partition identities.</p>
+
+<ul>
+<li><p><strong>File <code>verify.c</code>:</strong>
+The C program to verify the partition identities
+(upto <em>n=200</em>). It generates the partitions (in 
+ascending order) using Kelleher's 
+<em>accelerated ascending rule</em> algorithm
+(see <a href="http://jeromekelleher.net/downloads/k06.pdf">[Kel06]</a>)
+Once a partition
+is generated, then it is scanned to see if it is reducible
+or not for each of the three standard modules of level 4
+for A(2)2.</p></li>
+<li><p><strong>File <code>data.h</code>:</strong>
+The header file containing the data about the graded
+dimensions of the three standard modules for A(2)2
+of level 4. The data were computed in the Maple
+worksheet <code>maple/A22-level4-grdim.mw</code>.</p></li>
+</ul>
+
+<p>To compile and run:</p>
+
+<pre><code>    $ cc -std=c99 verify.c
+    $ ./a.out
+</code></pre>
+
+<p>The program will ask for the <em>starting</em> and <em>ending</em>
+value of <em>n</em>. Then it will output the result of the
+computations for these values. Note that, it takes more
+than a day to verify the partition identities for
+<em>n = 200</em>.</p>
+
+<h2>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
+
+<p><a href="http://support.csis.pace.edu/CSISWeb/docs/techReports/techReport280.pdf">[Cha11]</a> S.-H. Cha, <em>Recursive algorithm for generating partitions of an integer</em>, tech. rep. 280, Pace University, Seidenberg School of Computer Science and
+Information Systems, 2011.</p>
+
+<p><a href="http://jeromekelleher.net/downloads/k06.pdf">[Kel06]</a>
+J. Kelleher, “Encoding partitions as ascending compositions,” PhD thesis,
+University College Cork, 2006.</p>
+
+<p><a href="http://www.math.rutgers.edu/%7Ezeilberg/tokhniot/NCFPS">[NCFPS]</a>
+D. Zeilberger, <em>Noncommutative formal power series Maple package</em>, <a href="http://www.math.rutgers.edu/%7Ezeilberg/tokhniot/NCFPS">http://www.math.rutgers.edu/~zeilberg/tokhniot/NCFPS</a>.</p>
+
+<p><a href="http://arxiv.org/abs/1311.1141v2">[Rus13]</a> M. C. Russell, “Noncommutative recursions and the Laurent phenomenon,”
+arXiv preprint arXiv:1311.1141v2 (2013), url: <a href="http://arxiv.org/abs/">http://arxiv.org/abs/</a>
+1311.1141v2.</p>
+
+<p><a href="http://www.math.rutgers.edu/%7Erussell2">[Russell]</a>
+Homepage of M. C. Russell:  <a href="http://www.math.rutgers.edu/%7Erussell2">http://www.math.rutgers.edu/~russell2</a></p>
+
+<p><a href="http://www.math.rutgers.edu/%7Ezeilberg">[Zeilberger]</a> Homepage of D. Zeilberger: <a href="http://www.math.rutgers.edu/%7Ezeilberg">http://www.math.rutgers.edu/~zeilberg</a></p>
+
+<p>.</p>
+
+<p>.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Partition-identities-a22-level4 maintained by <a href="https://github.com/deehzee">deehzee</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-59107703-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
